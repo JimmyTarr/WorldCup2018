@@ -34,4 +34,4 @@ for i in Bet.index:
     Bet.loc[i, 'Predicted_Score'] = (Bet.loc[i] * Expect.pps).sum()
     Bet.loc[i, 'Acctual_Score'] = (Bet.loc[i] * Result.pps).sum()
 
-print(Bet.sort_values('Predicted_Score', ascending = False))
+Bet.sort_values('Predicted_Score', ascending = False).to_csv('Competition_Results.csv')
