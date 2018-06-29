@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -16,6 +17,7 @@ if (Bet.sum(1) != 16).any():
 Bet = Bet.sort_index(1)
 Expect = pd.read_csv('Results.csv', index_col = 0).sort_index()
 Expect.rename(index = str.strip, columns = str.strip, inplace = True)
+
 Result = Expect.copy() == 1
 Result.drop('points', inplace = True)
 
@@ -37,4 +39,12 @@ for i in Bet.index:
 Bet = Bet.sort_values('Actual_Score')
 Bet = Bet.append(Result.Tpoints)
 
-Bet.to_csv('Competition_Results.csv')
+f = open('Competition_Results.csv')
+oldrank = pd.read_csv(f, index_col = 0, usecols = ['Name', 'Actual_Score'])
+f.close()
+for i in Bet.index:
+    diff = len(oldrank.loc[i:]) - len(Bet.loc[i:])
+    print(i+' is '+['down','up'][diff>=0],abs(diff),'place'+['s ',' '][abs(diff)==1]+'to rank', len(Bet.loc[i:]) - 1)
+if len(sys.argv)>1:
+    if sys.argv[1] == 'write':
+        Bet.to_csv('Competition_Results.csv')
